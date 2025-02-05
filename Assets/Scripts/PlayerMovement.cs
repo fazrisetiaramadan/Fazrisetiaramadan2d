@@ -13,13 +13,17 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
+    private Vector3 originalScale; // Menyimpan skala asli karakter
 
     private void Awake()
     {
-        // Grab references for rigidbody and animator
+        // Ambil komponen Rigidbody2D, Animator, dan BoxCollider2D
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
+
+        // Simpan skala awal karakter
+        originalScale = transform.localScale;
     }
 
     private void Update()
@@ -27,11 +31,11 @@ public class PlayerMovement : MonoBehaviour
         // Input horizontal dari pemain
         horizontalInput = Input.GetAxis("Horizontal");
 
-        // Flip karakter saat bergerak ke kiri atau kanan
+        // Flip karakter tanpa mengubah ukurannya
         if (horizontalInput > 0.01f)
-            transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+            transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
         else if (horizontalInput < -0.01f)
-            transform.localScale = new Vector3(-0.4f, 0.4f, 0.4f);
+            transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
 
         // Cek apakah pemain sedang berlari atau berjalan
         bool isRunning = Input.GetKey(KeyCode.LeftShift) && horizontalInput != 0;
@@ -87,7 +91,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 // Wall jump saat pemain diam di dinding
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+                // Flip karakter tanpa mengubah ukurannya
+                transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
             }
             else
             {
