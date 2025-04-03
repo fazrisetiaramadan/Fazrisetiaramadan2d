@@ -15,7 +15,7 @@ public class Health : MonoBehaviour
     private Animator anim;
 
     public delegate void OnDeath();
-    public event OnDeath onDeath; // Event untuk mati
+    public event OnDeath onDeath; // Event untuk Game Over
 
     private void Awake()
     {
@@ -51,9 +51,19 @@ public class Health : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+
+        // Hentikan movement player
         GetComponent<PlayerMove>().enabled = false;
 
-        onDeath?.Invoke(); // Panggil event untuk memberi tahu GameOverManager
+        // Hentikan musik saat Game Over
+        Level1Music levelMusic = FindObjectOfType<Level1Music>();
+        if (levelMusic != null)
+        {
+            levelMusic.StopMusic();
+        }
+
+        // Panggil event Game Over
+        onDeath?.Invoke();
     }
 
     private IEnumerator Invulnerability()
