@@ -8,6 +8,6 @@ public class CoinManager : MonoBehaviour
     void Start()
     {
         int totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
-        totalCoinText.text = totalCoins.ToString(); // Hanya menampilkan angka
+        totalCoinText.text = totalCoins.ToString();
     }
 }

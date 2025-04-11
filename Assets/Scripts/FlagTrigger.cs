@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections;
 
 public class FlagTrigger : MonoBehaviour
 {
@@ -17,9 +18,11 @@ public class FlagTrigger : MonoBehaviour
             Time.timeScale = 0;
 
             earnedCoins = Random.Range(50, 101); // Koin acak antara 50 - 100
-            coinText.text = "Coins: " + earnedCoins;
 
-            // Simpan total koin di PlayerPrefs
+            // Mulai animasi coin naik dari 0 ke earnedCoins
+            StartCoroutine(AnimateCoinText(earnedCoins));
+
+            // Simpan total koin
             int totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
             totalCoins += earnedCoins;
             PlayerPrefs.SetInt("TotalCoins", totalCoins);
@@ -27,6 +30,24 @@ public class FlagTrigger : MonoBehaviour
 
             UnlockNextLevel();
         }
+    }
+
+    IEnumerator AnimateCoinText(int targetCoins)
+    {
+        int displayCoins = 0;
+        float duration = 1.5f; // durasi animasi
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime; // pakai unscaled karena timeScale = 0
+            float progress = timer / duration;
+            displayCoins = Mathf.FloorToInt(Mathf.Lerp(0, targetCoins, progress));
+            coinText.text = "Coins: " + displayCoins;
+            yield return null;
+        }
+
+        coinText.text = "Coins: " + targetCoins;
     }
 
     void UnlockNextLevel()
@@ -44,6 +65,4 @@ public class FlagTrigger : MonoBehaviour
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }
-
-    
 }

@@ -6,12 +6,14 @@ public class HealthManager : MonoBehaviour
 {
     public int maxHealth = 3;
     public int currentHealth;
-    public float cooldownTime = 240f; // 4 menit dalam detik
+    public float cooldownTime = 240f;
     public Text healthText;
     public Text cooldownText;
+    public GameObject shopPanel;
 
     private float cooldownTimer;
     private bool isCooldownActive;
+    private Coroutine cooldownRoutine;
 
     void Start()
     {
@@ -22,7 +24,7 @@ public class HealthManager : MonoBehaviour
 
         if (currentHealth == 0 && isCooldownActive)
         {
-            StartCoroutine(CooldownCoroutine());
+            cooldownRoutine = StartCoroutine(CooldownCoroutine());
         }
     }
 
@@ -44,14 +46,15 @@ public class HealthManager : MonoBehaviour
     {
         isCooldownActive = true;
         PlayerPrefs.SetInt("IsCooldownActive", 1);
-        StartCoroutine(CooldownCoroutine());
+        cooldownRoutine = StartCoroutine(CooldownCoroutine());
     }
 
     private IEnumerator CooldownCoroutine()
     {
         cooldownTimer = cooldownTime;
         PlayerPrefs.SetFloat("CooldownTimer", cooldownTimer);
-        healthText.gameObject.SetActive(false); // Sembunyikan health saat cooldown
+        healthText.gameObject.SetActive(false);
+
         while (cooldownTimer > 0)
         {
             yield return new WaitForSeconds(1);
@@ -59,10 +62,25 @@ public class HealthManager : MonoBehaviour
             PlayerPrefs.SetFloat("CooldownTimer", cooldownTimer);
             cooldownText.text = Mathf.Ceil(cooldownTimer).ToString();
         }
+
         isCooldownActive = false;
         PlayerPrefs.SetInt("IsCooldownActive", 0);
         currentHealth = maxHealth;
         PlayerPrefs.SetInt("Health", currentHealth);
+        UpdateHealthUI();
+    }
+
+    public void StopCooldown()
+    {
+        if (cooldownRoutine != null)
+        {
+            StopCoroutine(cooldownRoutine);
+            cooldownRoutine = null;
+        }
+        isCooldownActive = false;
+        cooldownTimer = 0;
+        PlayerPrefs.SetInt("IsCooldownActive", 0);
+        PlayerPrefs.SetFloat("CooldownTimer", 0);
         UpdateHealthUI();
     }
 
@@ -71,5 +89,27 @@ public class HealthManager : MonoBehaviour
         healthText.text = currentHealth.ToString();
         healthText.gameObject.SetActive(currentHealth > 0);
         cooldownText.gameObject.SetActive(currentHealth == 0);
+    }
+
+    public void OpenShopManually()
+    {
+        shopPanel.SetActive(true);
+    }
+
+    public void UpdateUIExternal()
+    {
+        UpdateHealthUI();
+    }
+
+    public void AddHealth(int amount)
+    {
+        currentHealth += amount;
+        PlayerPrefs.SetInt("Health", currentHealth);
+        UpdateHealthUI();
+    }
+
+    public bool IsCooldownActive()
+    {
+        return isCooldownActive;
     }
 }

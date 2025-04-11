@@ -2,65 +2,63 @@
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField] private float walkSpeed = 3f; // Kecepatan berjalan
-    [SerializeField] private float runSpeed = 6f; // Kecepatan berlari
-    [SerializeField] private float jumpPower = 10f; // Kekuatan lompat
+    [SerializeField] private float walkSpeed = 3f;
+    [SerializeField] private float runSpeed = 6f;
+    [SerializeField] private float jumpPower = 10f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource walkSound;
+    [SerializeField] private AudioSource runSound;
+    [SerializeField] private AudioSource jumpSound;
 
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
-    private Vector3 originalScale; // Menyimpan skala asli karakter
+    private Vector3 originalScale;
+
+    private bool isPlayingWalkSound = false;
+    private bool isPlayingRunSound = false;
 
     private void Awake()
     {
-        // Ambil komponen Rigidbody2D, Animator, dan BoxCollider2D
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
-
-        // Simpan skala awal karakter
         originalScale = transform.localScale;
     }
 
     private void Update()
     {
-        // Input horizontal dari pemain
         horizontalInput = Input.GetAxis("Horizontal");
 
-        // Flip karakter tanpa mengubah ukurannya
         if (horizontalInput > 0.01f)
             transform.localScale = new Vector3(originalScale.x, originalScale.y, originalScale.z);
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
 
-        // Cek apakah pemain sedang berlari atau berjalan
         bool isRunning = Input.GetKey(KeyCode.LeftShift) && horizontalInput != 0;
         bool isWalking = horizontalInput != 0 && !isRunning;
 
-        // Set parameter Animator
         anim.SetBool("run", isRunning);
         anim.SetBool("walk", isWalking);
         anim.SetBool("grounded", isGrounded());
 
-        // Tentukan kecepatan berdasarkan mode (run atau walk)
         float speed = isRunning ? runSpeed : walkSpeed;
 
-        // Atur kecepatan karakter
+        // Movement logic
         if (horizontalInput != 0)
-        {
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-        }
         else
-        {
-            // Hentikan karakter jika tidak ada input
             body.velocity = new Vector2(0, body.velocity.y);
-        }
 
-        // Logika wall jump
+        // Play sound logic
+        HandleSound(isWalking, isRunning);
+
+        // Jump
         if (wallJumpCooldown > 0.2f)
         {
             if (onWall() && !isGrounded())
@@ -71,11 +69,40 @@ public class PlayerMove : MonoBehaviour
             else
                 body.gravityScale = 7;
 
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
                 Jump();
+            }
         }
         else
+        {
             wallJumpCooldown += Time.deltaTime;
+        }
+    }
+
+    private void HandleSound(bool isWalking, bool isRunning)
+    {
+        if (isWalking && isGrounded())
+        {
+            if (!walkSound.isPlaying)
+            {
+                runSound.Stop();
+                walkSound.Play();
+            }
+        }
+        else if (isRunning && isGrounded())
+        {
+            if (!runSound.isPlaying)
+            {
+                walkSound.Stop();
+                runSound.Play();
+            }
+        }
+        else
+        {
+            walkSound.Stop();
+            runSound.Stop();
+        }
     }
 
     private void Jump()
@@ -84,24 +111,22 @@ public class PlayerMove : MonoBehaviour
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             anim.SetTrigger("jump");
+            jumpSound.Play();
         }
         else if (onWall() && !isGrounded())
         {
             if (horizontalInput == 0)
             {
-                // Wall jump saat pemain diam di dinding
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
-
-                // Flip karakter tanpa mengubah ukurannya
                 transform.localScale = new Vector3(-originalScale.x, originalScale.y, originalScale.z);
             }
             else
             {
-                // Wall jump saat bergerak
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
             }
 
             wallJumpCooldown = 0;
+            jumpSound.Play();
         }
     }
 
