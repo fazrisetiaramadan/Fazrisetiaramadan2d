@@ -11,11 +11,17 @@ public class Health : MonoBehaviour
     [Header("Invincibility Frames")]
     [SerializeField] private float iFramesDuration = 1f;
     [SerializeField] private int numberOfFlashes = 3;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip hurtSound;
+    [SerializeField] private AudioClip dieSound;
+
     private SpriteRenderer spriteRenderer;
     private Animator anim;
 
     public delegate void OnDeath();
-    public event OnDeath onDeath; // Event untuk Game Over
+    public event OnDeath onDeath;
 
     private void Awake()
     {
@@ -26,13 +32,16 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (isDead) return; 
-        
+        if (isDead) return;
+
         currentHealth = Mathf.Clamp(currentHealth - damage, 0, startingHealth);
         anim.SetTrigger(currentHealth > 0 ? "hurt" : "die");
 
         if (currentHealth > 0)
         {
+            if (hurtSound != null && audioSource != null)
+                audioSource.PlayOneShot(hurtSound);
+
             StartCoroutine(Invulnerability());
         }
         else
@@ -43,7 +52,7 @@ public class Health : MonoBehaviour
 
     public void AddHealth(float amount)
     {
-        if (isDead) return; 
+        if (isDead) return;
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, startingHealth);
     }
 
@@ -52,17 +61,17 @@ public class Health : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        // Hentikan movement player
+        if (dieSound != null && audioSource != null)
+            audioSource.PlayOneShot(dieSound);
+
         GetComponent<PlayerMove>().enabled = false;
 
-        // Hentikan musik saat Game Over
         Level1Music levelMusic = FindObjectOfType<Level1Music>();
         if (levelMusic != null)
         {
             levelMusic.StopMusic();
         }
 
-        // Panggil event Game Over
         onDeath?.Invoke();
     }
 

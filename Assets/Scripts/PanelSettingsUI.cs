@@ -3,22 +3,22 @@ using UnityEngine.UI;
 
 public class PanelSettingsUI : MonoBehaviour
 {
-    public GameObject settingsPanel; // Panel Settings
-    public Button closeButton; // Tombol Close
+    public GameObject settingsPanel; 
+    public Button closeButton; 
 
     void Start()
     {
-        settingsPanel.SetActive(false); // Panel mati saat awal
+        settingsPanel.SetActive(false); 
         closeButton.onClick.AddListener(CloseSettings);
     }
 
     public void OpenSettings()
     {
-        settingsPanel.SetActive(true); // Tampilkan panel settings
+        settingsPanel.SetActive(true); 
     }
 
     public void CloseSettings()
     {
-        settingsPanel.SetActive(false); // Sembunyikan panel settings
+        settingsPanel.SetActive(false); 
     }
 }

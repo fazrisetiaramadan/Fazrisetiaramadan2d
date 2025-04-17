@@ -9,8 +9,7 @@ public class HealthManager : MonoBehaviour
     public float cooldownTime = 240f;
     public Text healthText;
     public Text cooldownText;
-    public GameObject shopPanel;
-
+    public GameObject shopPanel;    
     private float cooldownTimer;
     private bool isCooldownActive;
     private Coroutine cooldownRoutine;
@@ -53,14 +52,15 @@ public class HealthManager : MonoBehaviour
     {
         cooldownTimer = cooldownTime;
         PlayerPrefs.SetFloat("CooldownTimer", cooldownTimer);
-        healthText.gameObject.SetActive(false);
+
+        cooldownText.gameObject.SetActive(true);
 
         while (cooldownTimer > 0)
         {
             yield return new WaitForSeconds(1);
             cooldownTimer -= 1;
             PlayerPrefs.SetFloat("CooldownTimer", cooldownTimer);
-            cooldownText.text = Mathf.Ceil(cooldownTimer).ToString();
+            cooldownText.text = "CoolDown : " + Mathf.CeilToInt(cooldownTimer).ToString() + "s";
         }
 
         isCooldownActive = false;
@@ -87,8 +87,17 @@ public class HealthManager : MonoBehaviour
     private void UpdateHealthUI()
     {
         healthText.text = currentHealth.ToString();
-        healthText.gameObject.SetActive(currentHealth > 0);
-        cooldownText.gameObject.SetActive(currentHealth == 0);
+        healthText.gameObject.SetActive(true); 
+
+        if (currentHealth == 0 && isCooldownActive)
+        {
+            cooldownText.gameObject.SetActive(true);
+            cooldownText.text = "CoolDown : " + Mathf.CeilToInt(cooldownTimer).ToString() + "s";
+        }
+        else
+        {
+            cooldownText.gameObject.SetActive(false);
+        }
     }
 
     public void OpenShopManually()
@@ -104,6 +113,9 @@ public class HealthManager : MonoBehaviour
     public void AddHealth(int amount)
     {
         currentHealth += amount;
+        if (currentHealth > maxHealth)
+            currentHealth = maxHealth;
+
         PlayerPrefs.SetInt("Health", currentHealth);
         UpdateHealthUI();
     }

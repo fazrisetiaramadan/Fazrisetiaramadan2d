@@ -159,3 +159,5 @@ MonoBehaviour:
   soundBukaPertanyaan: {fileID: 8300000, guid: 7d02a9f4b4204314a810cb4d2098ef89, type: 3}
   soundJawabanBenar: {fileID: 8300000, guid: 17ae36ec04a90b849902e8eb6a669333, type: 3}
   soundJawabanSalah: {fileID: 8300000, guid: 413a2740e6b68fd4f96de036eba65ce1, type: 3}
+  punyaKunci: 0
+  keyObject: {fileID: 0}

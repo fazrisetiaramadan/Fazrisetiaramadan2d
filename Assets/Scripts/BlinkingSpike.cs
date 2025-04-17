@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BlinkingSpike : MonoBehaviour
 {
-    public float blinkSpeed = 1.5f; // Kecepatan kedap-kedip
+    public float blinkSpeed = 1.5f; 
 
     private SpriteRenderer spriteRenderer;
     private bool isBlinking = true;
@@ -25,7 +25,7 @@ public class BlinkingSpike : MonoBehaviour
                 yield return new WaitForSeconds(blinkSpeed / 10);
             }
 
-            yield return new WaitForSeconds(0.5f); // Jeda saat menghilang
+            yield return new WaitForSeconds(0.5f); 
 
             // Fade In (Muncul lagi)
             for (float alpha = 0; alpha <= 1f; alpha += 0.1f)
@@ -34,7 +34,7 @@ public class BlinkingSpike : MonoBehaviour
                 yield return new WaitForSeconds(blinkSpeed / 10);
             }
 
-            yield return new WaitForSeconds(0.5f); // Jeda saat muncul
+            yield return new WaitForSeconds(0.5f); 
         }
     }
 
@@ -43,7 +43,7 @@ public class BlinkingSpike : MonoBehaviour
         if (spriteRenderer != null)
         {
             Color color = spriteRenderer.color;
-            color.a = alpha; // Ubah transparansi
+            color.a = alpha; 
             spriteRenderer.color = color;
         }
     }

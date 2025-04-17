@@ -13,9 +13,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float cameraSpeed = 3f;
 
     [Header("Camera Bounds")] 
-    [SerializeField] private float minX; // Batas kiri (misalnya tembok)
-    [SerializeField] private float maxX; // Batas kanan (akhir level)
-
+    [SerializeField] private float minX; 
+    [SerializeField] private float maxX; 
     private float lookAhead;
 
     private void Update()

@@ -3,8 +3,8 @@ using UnityEngine;
 public class MovingPlatform : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveDistance = 3f;  // Jarak gerak kiri-kanan
-    public float speed = 2f;        // Kecepatan gerak
+    public float moveDistance = 3f;  
+    public float speed = 2f;        
     
     private Vector3 startPos;
     private bool movingRight = true;

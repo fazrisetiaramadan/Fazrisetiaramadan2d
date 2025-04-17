@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
-    public Slider volumeSlider; // Referensi ke Slider
-    private AudioSource backgroundMusic; // Referensi ke AudioSource
+    public Slider volumeSlider; 
+    private AudioSource backgroundMusic; 
 
     void Start()
     {

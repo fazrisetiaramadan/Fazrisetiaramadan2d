@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Enemy
   - BackgroundMusic
+  - Key
   layers:
   - Default
   - TransparentFX

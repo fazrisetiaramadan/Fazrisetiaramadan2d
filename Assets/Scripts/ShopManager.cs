@@ -14,18 +14,17 @@ public class ShopManager : MonoBehaviour
         healthManager = FindObjectOfType<HealthManager>();
         UpdateCoinUI();
 
-        shopPanel.SetActive(false); // Panel shop tidak langsung tampil
+        shopPanel.SetActive(false); 
     }
 
     public void OpenShop()
     {
-        shopPanel.SetActive(true); // Tampilkan panel shop
+        shopPanel.SetActive(true); 
     }
 
     public void CloseShop()
     {
-        shopPanel.SetActive(false); // Sembunyikan panel shop
-    }
+        shopPanel.SetActive(false); 
 
     public void BuyHeart()
     {
@@ -48,7 +47,7 @@ public class ShopManager : MonoBehaviour
                 healthManager.UpdateUIExternal();
             }
 
-            CloseShop(); // Setelah beli, langsung tutup shop
+            CloseShop(); 
         }
     }
 

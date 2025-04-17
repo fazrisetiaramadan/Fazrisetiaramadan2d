@@ -1,14 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+    using UnityEngine;
 
-public class EnemyDemege : MonoBehaviour
-{
-    [SerializeField]private float damage;
-    private void OnTriggerEnter2D(Collider2D collision)
+    public class EnemyDemege : MonoBehaviour
     {
-        if(collision.tag == "Player")
-            collision.GetComponent<Health>().TakeDamage(damage);
-    }
+        [SerializeField] private float damage;
 
-}
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Player"))
+            {
+                Health playerHealth = collision.GetComponent<Health>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(damage);
+                }
+            }
+        }
+    }

@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class LevelButton : MonoBehaviour
 {
-    public int levelIndex; // Nomor level yang akan dibuka
+    public int levelIndex; 
 
     public void LoadLevel()
     {
@@ -11,8 +11,8 @@ public class LevelButton : MonoBehaviour
 
         if (healthManager != null && healthManager.currentHealth > 0)
         {
-            healthManager.UseHealth(); // Mengurangi health sebelum masuk level
-            SceneManager.LoadScene("Level" + levelIndex); // Memulai level
+            healthManager.UseHealth(); 
+            SceneManager.LoadScene("Level" + levelIndex); 
         }
         else
         {

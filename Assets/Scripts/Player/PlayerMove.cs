@@ -13,15 +13,14 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private AudioSource runSound;
     [SerializeField] private AudioSource jumpSound;
 
+    public bool canMove = true; 
+
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
     private Vector3 originalScale;
-
-    private bool isPlayingWalkSound = false;
-    private bool isPlayingRunSound = false;
 
     private void Awake()
     {
@@ -33,6 +32,14 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove)
+        {
+            body.velocity = new Vector2(0, body.velocity.y);
+            anim.SetBool("walk", false);
+            anim.SetBool("run", false);
+            return;
+        }
+
         horizontalInput = Input.GetAxis("Horizontal");
 
         if (horizontalInput > 0.01f)
@@ -55,10 +62,8 @@ public class PlayerMove : MonoBehaviour
         else
             body.velocity = new Vector2(0, body.velocity.y);
 
-        // Play sound logic
         HandleSound(isWalking, isRunning);
 
-        // Jump
         if (wallJumpCooldown > 0.2f)
         {
             if (onWall() && !isGrounded())

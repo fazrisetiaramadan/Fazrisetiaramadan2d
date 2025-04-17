@@ -5,30 +5,50 @@ using System.Collections;
 
 public class SplashScreen : MonoBehaviour
 {
-    public Image logoImage; // Masukkan logo di Inspector
-    public float fadeDuration = 1.5f; // Waktu fade in/out
-    public float displayTime = 2f; // Waktu logo tetap tampil sebelum fade out
-    public string nextScene = "MainMenu"; // Nama scene tujuan
+    [SerializeField] private Image logoImage;
+    [SerializeField] private float fadeDuration = 1.5f;
+    [SerializeField] private string nextScene = "MainMenu";
+    [SerializeField] private Slider loadingBar;
+    [SerializeField] private Text loadingText;
+    [SerializeField] private float progressSpeed = 0.3f;
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(PlaySplashScreen());
     }
 
-    IEnumerator PlaySplashScreen()
+    private IEnumerator PlaySplashScreen()
     {
-        // Mulai dengan logo transparan
-        logoImage.canvasRenderer.SetAlpha(0.0f);
+        logoImage.canvasRenderer.SetAlpha(0f);
+        loadingBar.value = 0f;
+        loadingBar.gameObject.SetActive(true);
+        loadingText.text = "0%";
 
-        // Fade in
-        logoImage.CrossFadeAlpha(1.0f, fadeDuration, false);
-        yield return new WaitForSeconds(fadeDuration + displayTime);
+        logoImage.CrossFadeAlpha(1f, fadeDuration, false);
 
-        // Fade out
-        logoImage.CrossFadeAlpha(0.0f, fadeDuration, false);
-        yield return new WaitForSeconds(fadeDuration);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(nextScene);
+        asyncLoad.allowSceneActivation = false;
 
-        // Pindah ke Main Menu
-        SceneManager.LoadScene(nextScene);
+        float currentProgress = 0f;
+
+        while (!asyncLoad.isDone)
+        {
+            float targetProgress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
+            currentProgress = Mathf.MoveTowards(currentProgress, targetProgress, progressSpeed * Time.deltaTime);
+            loadingBar.value = currentProgress;
+
+            int percentage = Mathf.RoundToInt(currentProgress * 100f);
+            loadingText.text = percentage.ToString() + "%";
+
+            if (currentProgress >= 1f && asyncLoad.progress >= 0.9f)
+            {
+                yield return new WaitForSeconds(0.5f);
+                logoImage.CrossFadeAlpha(0f, fadeDuration, false);
+                yield return new WaitForSeconds(fadeDuration);
+                asyncLoad.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
     }
 }

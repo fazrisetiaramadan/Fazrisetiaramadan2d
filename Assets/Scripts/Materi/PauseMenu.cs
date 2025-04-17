@@ -21,7 +21,7 @@ public class PauseMenu : MonoBehaviour
         // Tambahkan event listener untuk perubahan slider
         volumeSlider.onValueChanged.AddListener(SetVolume);
         
-        pauseMenuUI.SetActive(false); // Pastikan menu pause tidak aktif di awal
+        pauseMenuUI.SetActive(false); 
     }
 
     private void Update()
@@ -56,7 +56,7 @@ public class PauseMenu : MonoBehaviour
     public void SetVolume(float volume)
     {
         backgroundMusic.volume = volume;
-        PlayerPrefs.SetFloat("MusicVolume", volume); // Simpan volume
+        PlayerPrefs.SetFloat("MusicVolume", volume);
         PlayerPrefs.Save();
     }
 }

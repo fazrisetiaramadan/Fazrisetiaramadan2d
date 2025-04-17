@@ -8,8 +8,8 @@ public class RogueAI : MonoBehaviour
     public Transform attackPoint;
 
     [Header("Movement Settings")]
-    public float walkSpeed = 1.5f;    // Kecepatan patroli
-    public float runSpeed = 3f;       // Kecepatan kejar
+    public float walkSpeed = 1.5f;    
+    public float runSpeed = 3f;       
     public float detectionRange = 5f;
     public float attackRange = 1.5f;
     public float spriteScale = 0.2f;
@@ -28,7 +28,7 @@ public class RogueAI : MonoBehaviour
     void Start()
     {
         startingPosition = transform.position;
-        animator.SetBool("IsPatrolling", true); // Set animasi patroli awal
+        animator.SetBool("IsPatrolling", true); 
     }
 
     void Update()
@@ -58,7 +58,7 @@ public class RogueAI : MonoBehaviour
             isChasing = false;
             animator.SetBool("IsChasing", false);
             animator.SetBool("IsPatrolling", true);
-            startingPosition = transform.position; // Reset patrol point
+            startingPosition = transform.position;
         }
         else if (!isChasing)
         {

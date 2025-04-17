@@ -8,12 +8,12 @@ public class MainMenuMusic : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        audioSource.Play(); // Mulai musik saat MainMenu dimulai
+        audioSource.Play(); 
     }
 
     void Update()
     {
-        // Jika scene bukan MainMenu, hapus GameObject ini agar musik berhenti
+        
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
             Destroy(gameObject);
